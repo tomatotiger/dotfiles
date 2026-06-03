@@ -1,3 +1,5 @@
+set -gx EDITOR nvim
+set -gx VISUAL nvim
 set -gx BAT_CONFIG_PATH $HOME/.batrc
 set -gx N_PREFIX $HOME/n
 set -gx PROJECT_HOME $HOME/workspace

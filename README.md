@@ -9,10 +9,7 @@
 
 ## configurations
 
-1. install vim plugins:
-  - open vim
-  - :PlugInstall
-  - restart
+1. neovim: just open `nvim`, plugins install automatically via [lazy.nvim](https://github.com/folke/lazy.nvim)
 2. install tmux plugins:
   - open tmux
   - ctrl-a + I
@@ -25,7 +22,7 @@
 - [rcm](https://github.com/thoughtbot/rcm): dotfile management
 - [fish](https://fishshell.com/): **F**riendly **I**nteractive **Sh**ell for the 90s
 - [neovim](https://neovim.io/): hyperextensible Vim-based text editor
-- [vim-plug](https://github.com/junegunn/vim-plug): vim plguin manager
+- [lazy.nvim](https://github.com/folke/lazy.nvim): neovim plugin manager
 - tmux: terminal multiplexer
   - [guide](https://thoughtbot.com/upcase/tmux)
   - [tmux-plugin-manager](https://github.com/tmux-plugins/tpm)

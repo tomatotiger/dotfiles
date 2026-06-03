@@ -1,4 +1,6 @@
 if status --is-interactive
+    abbr -a vim nvim
+    abbr -a vi nvim
     abbr -a ddgr ddgr -n 8
     abbr -a tmux tmux -2
     abbr -a ta tmux attach -d -t
