@@ -1,6 +1,10 @@
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- disable netrw in favor of nvim-tree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
 --    `:help lazy.nvim.txt` for more info
@@ -58,6 +62,7 @@ require('lazy').setup({
       -- See :h blink-cmp-config-keymap for defining your own keymap
       keymap = { 
         preset = 'default',
+        ['<C-space>'] = {},  -- freed: conflicts with macOS input-source switch
         ['<C-j>'] = { 'select_next', 'fallback' },
         ['<C-k>'] = { 'select_prev', 'fallback' },
       },
@@ -83,7 +88,7 @@ require('lazy').setup({
           auto_show_delay_ms = 500,
         },
         menu = {
-          auto_show = false,
+          auto_show = true,  -- pop menu automatically; no manual trigger key needed
         },
         ghost_text = {
           enabled = true,
@@ -184,6 +189,31 @@ require('lazy').setup({
     dependencies = { "nvim-lua/plenary.nvim" }
   },
 
+  {
+    -- file tree (replaces netrw). E = expand all, W = collapse all
+    'nvim-tree/nvim-tree.lua',
+    opts = {
+      view = { width = 30 },
+      git = { enable = true },
+      renderer = {
+        indent_markers = { enable = true },
+        highlight_git = 'name',  -- color filenames by git status
+        icons = {
+          show = { file = false, folder = false, folder_arrow = true, git = true },
+          glyphs = {
+            folder = { arrow_closed = '+', arrow_open = '-' },
+            -- Unicode text symbols for git status (no Nerd Font needed)
+            git = {
+              unstaged = '●', staged = '✔', unmerged = '◆',
+              renamed = '➜', untracked = '★', deleted = '✖', ignored = '◌',
+            },
+          },
+        },
+      },
+      filters = { dotfiles = false },
+    },
+  },
+
   -- {
   --   -- Highlight, edit, and navigate code
   --   'nvim-treesitter/nvim-treesitter',
@@ -253,7 +283,7 @@ vim.g.netrw_winsize = 30
 vim.g.netrw_banner = 0
 vim.g.netrw_localcopydircmd = 'cp -r'
 vim.api.nvim_set_hl(0, 'netrwMarkFile', {link = 'Search'})
-vim.keymap.set('n', '<leader>E', ':Lexplore<CR>', { desc = 'Toggle file explorer' })
+vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { desc = 'Toggle file tree' })
 
 -- [[ Basic Keymaps ]]
 
@@ -341,7 +371,7 @@ vim.keymap.set("n", "<leader>e", function() harpoon.ui:toggle_quick_menu(harpoon
 
 vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
 vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
-vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+-- <C-n> is now the file explorer toggle (see netrw section); harpoon item 3 via the menu (<leader>e)
 vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
 
 -- Toggle previous & next buffers stored within Harpoon list
@@ -569,3 +599,24 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     end, 500)  -- Adjust the delay as needed
   end,
 })
+
+-- nvim-tree git status colors (symbol + filename share one color per state)
+local function nvimtree_git_colors()
+  local hl = vim.api.nvim_set_hl
+  local colors = {
+    Dirty   = '#e5c07b', -- modified (yellow)
+    Staged  = '#98c379', -- staged (green)
+    New     = '#56b6c2', -- untracked (cyan)
+    Deleted = '#e06c75', -- deleted (red)
+    Renamed = '#c678dd', -- renamed (purple)
+    Merge   = '#d19a66', -- conflict (orange)
+    Ignored = '#5c6370', -- ignored (grey)
+  }
+  for state, fg in pairs(colors) do
+    hl(0, 'NvimTreeGit' .. state .. 'Icon', { fg = fg })
+    hl(0, 'NvimTreeGitFile' .. state .. 'HL', { fg = fg })
+    hl(0, 'NvimTreeGitFolder' .. state .. 'HL', { fg = fg })
+  end
+end
+vim.api.nvim_create_autocmd('ColorScheme', { callback = nvimtree_git_colors })
+nvimtree_git_colors()

@@ -1,0 +1,7 @@
+{
+  "includeCoAuthoredBy": false,
+  "theme": "dark",
+  "enabledPlugins": {
+    "pyright-lsp@claude-plugins-official": true
+  }
+}

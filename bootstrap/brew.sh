@@ -15,4 +15,6 @@ brew install \
     lynx \
     httpie
 
+brew install --cask claude-code
+
 ./common.sh
